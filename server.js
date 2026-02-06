@@ -121,28 +121,30 @@
 
 
 
-const express = require("express");
-const mongoose = require("mongoose");
-const path = require("path");
-const cors = require("cors");
+// const express = require("express");
+// const mongoose = require("mongoose");
+// const path = require("path");
+// const cors = require("cors");
 
-const app = express();
+// const Contact = require("./models/Contact");
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// const app = express();
 
-// Serve frontend files
-app.use(express.static(path.join(__dirname, "public")));
+// // Middleware
+// app.use(cors());
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 
-// MongoDB connection
-mongoose
-  .connect("mongodb+srv://ucch-siksha:Tanu1619@ucch-siksha.69otp69.mongodb.net/ucchDB")
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+// // Serve frontend files
+// app.use(express.static(path.join(__dirname, "public")));
 
-// --- Contact Schema ---
+// // MongoDB connection
+// mongoose
+//   .connect("mongodb+srv://ucch-siksha:Tanu1619@ucch-siksha.69otp69.mongodb.net/ucchDB")
+//   .then(() => console.log("MongoDB Connected"))
+//   .catch(err => console.log(err));
+
+// // --- Contact Schema ---
 // const ContactSchema = new mongoose.Schema({
 //   name: { type: String, required: true },
 //   email: { type: String, required: true },
@@ -159,22 +161,98 @@ mongoose
 
 
 
-const ContactSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
-  message: { type: String, required: true },
-  call15: { type: Boolean, default: false },
+// const ContactSchema = new mongoose.Schema({
+//   name: { type: String, required: true },
+//   email: { type: String, required: true },
+//   phone: { type: String, required: true },
+//   message: { type: String, required: true },
+//   call15: { type: Boolean, default: false },
 
-  // 🔥 NEW FIELD
-  status: {
-    type: String,
-    enum: ["New", "Contacted", "Converted", "Lost"],
-    default: "New"
-  },
+//   // 🔥 NEW FIELD
+//   status: {
+//     type: String,
+//     enum: ["New", "Contacted", "Converted", "Lost"],
+//     default: "New"
+//   },
 
-  createdAt: { type: Date, default: Date.now }
-});
+//   createdAt: { type: Date, default: Date.now }
+// });
+
+
+
+// // --- Contact API ---
+// app.post("/api/contact", async (req, res) => {
+//   try {
+//     const { name, email, phone, message, call15, courseInterested  } = req.body;
+//     if (!name || !email || !phone || !message || !courseInterested) {
+//       return res.status(400).json({ error: "All fields are required" });
+//     }
+//     const newContact = new Contact({ name, email, phone, message, call15, courseInterested });
+//     await newContact.save();
+//     res.status(200).json({ success: true, message: "Message saved" });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// });
+
+
+
+// // --- Admin routes (optional) ---
+// app.get("/api/admin/contacts", async (req, res) => {
+//   try {
+//     const contacts = await Contact.find().sort({ createdAt: -1 });
+//     res.json(contacts);
+//   } catch (err) {
+//     res.status(500).json({ error: "Failed to fetch contacts" });
+//   }
+// });
+
+// // Update lead status
+// app.patch("/api/admin/contacts/:id/status", async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { leadStatus } = req.body;
+
+//     const allowedStatuses = ["New", "Contacted", "Converted", "Lost"];
+
+//     if (!allowedStatuses.includes(leadStatus)) {
+//       return res.status(400).json({ error: "Invalid lead status" });
+//     }
+
+//     const updated = await Contact.findByIdAndUpdate(
+//       id,
+//       { leadStatus },
+//       { new: true }
+//     );
+
+//     res.json(updated);
+//   } catch (err) {
+//     res.status(500).json({ error: "Failed to update lead status" });
+//   }
+// });
+
+
+
+// // Start server
+// app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // --- Registration Schema ---
 // const RegisterSchema = new mongoose.Schema({
@@ -189,21 +267,7 @@ const ContactSchema = new mongoose.Schema({
 
 // const Register = mongoose.model("Register", RegisterSchema);
 
-// --- Contact API ---
-app.post("/api/contact", async (req, res) => {
-  try {
-    const { name, email, phone, message, call15, courseInterested  } = req.body;
-    if (!name || !email || !phone || !message || !courseInterested) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-    const newContact = new Contact({ name, email, phone, message, call15, courseInterested });
-    await newContact.save();
-    res.status(200).json({ success: true, message: "Message saved" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+
 
 // --- Registration API ---
 // app.post("/api/register", async (req, res) => {
@@ -221,41 +285,6 @@ app.post("/api/contact", async (req, res) => {
 //   }
 // });
 
-// --- Admin routes (optional) ---
-app.get("/api/admin/contacts", async (req, res) => {
-  try {
-    const contacts = await Contact.find().sort({ createdAt: -1 });
-    res.json(contacts);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch contacts" });
-  }
-});
-
-// Update lead status
-app.patch("/api/admin/contacts/:id/status", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { leadStatus } = req.body;
-
-    const allowedStatuses = ["New", "Contacted", "Converted", "Lost"];
-
-    if (!allowedStatuses.includes(leadStatus)) {
-      return res.status(400).json({ error: "Invalid lead status" });
-    }
-
-    const updated = await Contact.findByIdAndUpdate(
-      id,
-      { leadStatus },
-      { new: true }
-    );
-
-    res.json(updated);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to update lead status" });
-  }
-});
-
-
 // app.get("/api/admin/registrations", async (req, res) => {
 //   try {
 //     const regs = await Register.find().sort({ createdAt: -1 });
@@ -265,5 +294,68 @@ app.patch("/api/admin/contacts/:id/status", async (req, res) => {
 //   }
 // });
 
-// Start server
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+
+
+
+
+
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const Contact = require("./models/Contact");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// MongoDB
+mongoose
+  .connect(process.env.MONGODB_URI || "mongodb+srv://ucch-siksha:Tanu1619@ucch-siksha.69otp69.mongodb.net/ucchDB")
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch(err => console.error("❌ MongoDB Error:", err));
+
+// Save contact
+app.post("/api/contact", async (req, res) => {
+  try {
+    const contact = new Contact(req.body);
+    await contact.save();
+    res.status(201).json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to save contact" });
+  }
+});
+
+// Get all contacts (ADMIN)
+app.get("/api/admin/contacts", async (req, res) => {
+  try {
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+    res.json(contacts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch contacts" });
+  }
+});
+
+// Update lead status
+app.patch("/api/admin/contacts/:id/status", async (req, res) => {
+  try {
+    const { leadStatus } = req.body;
+
+    const updated = await Contact.findByIdAndUpdate(
+      req.params.id,
+      { leadStatus },
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update status" });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));

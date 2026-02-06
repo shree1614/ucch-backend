@@ -1,21 +1,20 @@
 const mongoose = require("mongoose");
 
-const contactSchema = new mongoose.Schema(
-  {
-    name: String,
-    email: String,
-    phone: String,
-    message: String,
-    courseInterested: String,
-    call15: Boolean,
-    leadStatus: {
-      type: String,
-      enum: ["New", "Contacted", "Converted"],
-      default: "New"
-    }
+const ContactSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+  message: { type: String, required: true },
+  courseInterested: { type: String, required: true },
+  call15: { type: Boolean, default: false },
+
+  leadStatus: {
+    type: String,
+    enum: ["New", "Contacted", "Converted", "Lost"],
+    default: "New"
   },
-  { timestamps: true }
-);
 
-module.exports = mongoose.model("Contact", contactSchema);
+  createdAt: { type: Date, default: Date.now }
+});
 
+module.exports = mongoose.model("Contact", ContactSchema);
