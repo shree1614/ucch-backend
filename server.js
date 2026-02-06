@@ -143,30 +143,51 @@ mongoose
   .catch(err => console.log(err));
 
 // --- Contact Schema ---
+// const ContactSchema = new mongoose.Schema({
+//   name: { type: String, required: true },
+//   email: { type: String, required: true },
+//   phone: { type: String, required: true },
+//   message: { type: String, required: true },
+//   courseInterested: { type: String },
+//   call15: { type: Boolean, default: false },
+//   createdAt: { type: Date, default: Date.now }
+// });
+
+// const Contact = mongoose.model("Contact", ContactSchema);
+
+
+
+
+
 const ContactSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
   message: { type: String, required: true },
-  courseInterested: { type: String },
   call15: { type: Boolean, default: false },
+
+  // 🔥 NEW FIELD
+  status: {
+    type: String,
+    enum: ["New", "Contacted", "Converted", "Lost"],
+    default: "New"
+  },
+
   createdAt: { type: Date, default: Date.now }
 });
-
-const Contact = mongoose.model("Contact", ContactSchema);
 
 // --- Registration Schema ---
-const RegisterSchema = new mongoose.Schema({
-  fullName: { type: String, required: true },
-  email: { type: String, required: true },
-  phone: { type: String, required: true },
- courseInterested: { type: String, required: true  },
- call15: { type: Boolean, default: false },
-  city: { type: String },
-  createdAt: { type: Date, default: Date.now }
-});
+// const RegisterSchema = new mongoose.Schema({
+//   fullName: { type: String, required: true },
+//   email: { type: String, required: true },
+//   phone: { type: String, required: true },
+//  courseInterested: { type: String, required: true  },
+//  call15: { type: Boolean, default: false },
+//   city: { type: String },
+//   createdAt: { type: Date, default: Date.now }
+// });
 
-const Register = mongoose.model("Register", RegisterSchema);
+// const Register = mongoose.model("Register", RegisterSchema);
 
 // --- Contact API ---
 app.post("/api/contact", async (req, res) => {
@@ -185,20 +206,20 @@ app.post("/api/contact", async (req, res) => {
 });
 
 // --- Registration API ---
-app.post("/api/register", async (req, res) => {
-  try {
-    const { fullName, email, phone, course, city } = req.body;
-    if (!fullName || !email || !phone || !course) {
-      return res.status(400).json({ error: "All required fields must be filled" });
-    }
-    const newRegister = new Register({ fullName, email, phone, courseInterested, city });
-    await newRegister.save();
-    res.status(200).json({ success: true, message: "Registration successful" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
-  }
-});
+// app.post("/api/register", async (req, res) => {
+//   try {
+//     const { fullName, email, phone, course, city } = req.body;
+//     if (!fullName || !email || !phone || !course) {
+//       return res.status(400).json({ error: "All required fields must be filled" });
+//     }
+//     const newRegister = new Register({ fullName, email, phone, courseInterested, city });
+//     await newRegister.save();
+//     res.status(200).json({ success: true, message: "Registration successful" });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// });
 
 // --- Admin routes (optional) ---
 app.get("/api/admin/contacts", async (req, res) => {

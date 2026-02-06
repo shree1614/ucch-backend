@@ -6,18 +6,16 @@ const contactSchema = new mongoose.Schema(
     email: String,
     phone: String,
     message: String,
-
-    courseInterested: {
+    courseInterested: String,
+    call15: Boolean,
+    leadStatus: {
       type: String,
-      default: "Not Selected"
-    },
-
-    call15: {
-      type: Boolean,
-      default: false
+      enum: ["New", "Contacted", "Converted"],
+      default: "New"
     }
   },
   { timestamps: true }
 );
 
 module.exports = mongoose.model("Contact", contactSchema);
+
