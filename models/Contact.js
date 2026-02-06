@@ -1,0 +1,23 @@
+const mongoose = require("mongoose");
+
+const contactSchema = new mongoose.Schema(
+  {
+    name: String,
+    email: String,
+    phone: String,
+    message: String,
+
+    courseInterested: {
+      type: String,
+      default: "Not Selected"
+    },
+
+    call15: {
+      type: Boolean,
+      default: false
+    }
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Contact", contactSchema);

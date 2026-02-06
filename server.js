@@ -148,6 +148,7 @@ const ContactSchema = new mongoose.Schema({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   message: { type: String, required: true },
+  courseInterested: { type: String },
   call15: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
@@ -159,7 +160,8 @@ const RegisterSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
-  course: { type: String, required: true },
+ courseInterested: { type: String, required: true  },
+ call15: { type: Boolean, default: false },
   city: { type: String },
   createdAt: { type: Date, default: Date.now }
 });
@@ -169,11 +171,11 @@ const Register = mongoose.model("Register", RegisterSchema);
 // --- Contact API ---
 app.post("/api/contact", async (req, res) => {
   try {
-    const { name, email, phone, message, call15 } = req.body;
-    if (!name || !email || !phone || !message) {
+    const { name, email, phone, message, call15, courseInterested  } = req.body;
+    if (!name || !email || !phone || !message || !courseInterested) {
       return res.status(400).json({ error: "All fields are required" });
     }
-    const newContact = new Contact({ name, email, phone, message, call15 });
+    const newContact = new Contact({ name, email, phone, message, call15, courseInterested });
     await newContact.save();
     res.status(200).json({ success: true, message: "Message saved" });
   } catch (err) {
@@ -189,7 +191,7 @@ app.post("/api/register", async (req, res) => {
     if (!fullName || !email || !phone || !course) {
       return res.status(400).json({ error: "All required fields must be filled" });
     }
-    const newRegister = new Register({ fullName, email, phone, course, city });
+    const newRegister = new Register({ fullName, email, phone, courseInterested, city });
     await newRegister.save();
     res.status(200).json({ success: true, message: "Registration successful" });
   } catch (err) {
