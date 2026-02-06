@@ -231,14 +231,39 @@ app.get("/api/admin/contacts", async (req, res) => {
   }
 });
 
-app.get("/api/admin/registrations", async (req, res) => {
+// Update lead status
+app.patch("/api/admin/contacts/:id/status", async (req, res) => {
   try {
-    const regs = await Register.find().sort({ createdAt: -1 });
-    res.json(regs);
+    const { id } = req.params;
+    const { leadStatus } = req.body;
+
+    const allowedStatuses = ["New", "Contacted", "Converted", "Lost"];
+
+    if (!allowedStatuses.includes(leadStatus)) {
+      return res.status(400).json({ error: "Invalid lead status" });
+    }
+
+    const updated = await Contact.findByIdAndUpdate(
+      id,
+      { leadStatus },
+      { new: true }
+    );
+
+    res.json(updated);
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch registrations" });
+    res.status(500).json({ error: "Failed to update lead status" });
   }
 });
+
+
+// app.get("/api/admin/registrations", async (req, res) => {
+//   try {
+//     const regs = await Register.find().sort({ createdAt: -1 });
+//     res.json(regs);
+//   } catch (err) {
+//     res.status(500).json({ error: "Failed to fetch registrations" });
+//   }
+// });
 
 // Start server
 app.listen(3000, () => console.log("Server running on http://localhost:3000"));
